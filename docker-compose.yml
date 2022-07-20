@@ -1,0 +1,51 @@
+version: '2.4'
+services:
+  adminer:
+    image: adminer:standalone
+    restart: always
+    depends_on:
+      - 'db'
+    volumes:
+      - ./docker/adminer/plugins-enabled:/var/www/html/plugins-enabled
+    ports:
+      - 8001:8080
+
+  db:
+    image: postgres:alpine
+    restart: always
+    # The following turns the DB into less durable, but gains significant performance improvements
+    command: 'postgres -c fsync=off -c full_page_writes=off -c synchronous_commit=OFF'
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: hasura
+      POSTGRES_DB: hasura
+      POSTGRES_PASSWORD: hasura
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U hasura']
+      interval: 30s
+      timeout: 5s
+      retries: 100
+
+  ql:
+    image: nitra/graphql-engine
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - '4040:8080'
+    restart: always
+    # volumes:
+    #   - ./docker/hasura/migrations:/hasura-migrations
+    #   - ./docker/hasura/metadata:/hasura-metadata
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://hasura:hasura@db:5432/hasura
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "false" to disable console
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_ENABLE_TELEMETRY: 'false'
+      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url": "https://n-jwks.web.app/.well-known/jwks.json"}'
+      HASURA_GRAPHQL_ADMIN_SECRET: secret
+      HASURA_GRAPHQL_DEV_MODE: 'true'
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: 'anonymous'
+      GT_RUN: 'http://host.docker.internal:8091/'
+      X_NITRA_CF_KEY: 'secret'

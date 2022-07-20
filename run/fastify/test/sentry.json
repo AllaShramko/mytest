@@ -1,0 +1,56 @@
+{
+  "action": "assigned",
+  "installation": {
+    "uuid": "e91bbef2-902d-4d38-9f10-c20f29a2da98"
+  },
+  "data": {
+    "assignee": {
+      "type": "user",
+      "name": "Vitalii Tverdokhlib",
+      "id": 373042,
+      "email": "vitaliytv@nitralabs.com"
+    },
+    "issue": {
+      "id": "2456291124",
+      "shareId": null,
+      "shortId": "ATLAS-8",
+      "title": "Error: ResizeObserver loop limit exceeded",
+      "culprit": "?(index)",
+      "permalink": null,
+      "logger": null,
+      "level": "error",
+      "status": "unresolved",
+      "statusDetails": {},
+      "isPublic": false,
+      "platform": "javascript",
+      "project": {},
+      "type": "error",
+      "metadata": {
+        "value": "ResizeObserver loop limit exceeded",
+        "type": "Error"
+      },
+      "numComments": 0,
+      "assignedTo": {
+        "email": "vitaliytv@nitralabs.com",
+        "type": "user",
+        "id": "373042",
+        "name": "Vitalii Tverdokhlib"
+      },
+      "isBookmarked": false,
+      "isSubscribed": false,
+      "subscriptionDetails": null,
+      "hasSeen": false,
+      "annotations": [],
+      "isUnhandled": true,
+      "count": "13",
+      "userCount": 4,
+      "firstSeen": "2021-06-15T05:54:26.465000Z",
+      "lastSeen": "2021-06-16T19:06:55.271000Z"
+    }
+  },
+  "actor": {
+    "type": "user",
+    "id": 373042,
+    "name": "Vitalii Tverdokhlib"
+  }
+}

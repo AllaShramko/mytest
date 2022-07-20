@@ -1,0 +1,43 @@
+{
+  "name": "gt-run",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "author": "<ai@nitra.ai>",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "npx nodemon --exec 'yarn reload'",
+    "prod-start": "NODE_ENV=production node index.js",
+    "reload": "node -r dotenv-defaults/config src/index.js | npx pino-pretty",
+    "e-github": "curl -d '@test/github.json' -H 'x-hub-signature-256:sha256=92037e5b973995b943bbb0593db314d150ed8aee254a7326511910d032a5e0a9' -H 'Content-Type:application/json' -X POST http://localhost:8091/github",
+    "e-sentry": "curl -d '@test/sentry.json' -H 'Sentry-Hook-Signature:5834865394ac579eb4436ce003b9895a6ed80a781cc6db900dc40cc8ea1d4fd8' -H 'Content-Type:application/json' -X POST http://localhost:8091/sentry",
+    "e-bitrix": "curl -d '@test/bitrix.json' -H 'Content-Type:application/json' -X POST http://localhost:8091/bitrix",
+    "e-gt-task-active-update": "curl -d '@test/gt-task-active-update.json' -H 'x-nitra-cf-key:secret' -H 'Content-Type:application/json' -X POST http://localhost:8091/gt-task-active-update",
+    "fix": "npx standard --fix && npx prettier --write ."
+  },
+  "dependencies": {
+    "@2bad/bitrix": "^2.3.1",
+    "@47ng/check-env": "^2.0.2",
+    "@nitra/cf-security": "^2.0.50",
+    "@nitra/consola": "^1.6.1",
+    "@nitra/isenv": "^2.0.1",
+    "fastify": "^3.14.2",
+    "fastify-formbody": "^5.0.0",
+    "fastify-sensible": "^3.1.0",
+    "graphql": "^15.5.0",
+    "graphql-request": "^3.4.0",
+    "qs": "^6.10.1"
+  },
+  "devDependencies": {
+    "@nitra/eslint-config": "^1.0.11",
+    "dotenv-defaults": "^2.0.2"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@nitra/eslint-config/node"
+    ]
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

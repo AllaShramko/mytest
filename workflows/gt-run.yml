@@ -1,0 +1,52 @@
+name: gt-run
+on:
+  push:
+    paths:
+      - 'run/gt/**'
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  gt-run:
+    name: gt-run
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: depcheck
+        run: npx depcheck --ignores="dotenv-defaults,graphql"
+        working-directory: run/gt
+
+      - name: build
+        run: docker build -t "us.gcr.io/nitraai/gt:${GITHUB_SHA::8}" .
+        working-directory: run/gt
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker --quiet
+
+      - name: push
+        run: docker push "us.gcr.io/nitraai/gt:${GITHUB_SHA::8}"
+        working-directory: run/gt
+
+      - name: deploy
+        working-directory: run/gt
+        run: >-
+          gcloud alpha run deploy gt --image "us.gcr.io/nitraai/gt:${GITHUB_SHA::8}"
+          --execution-environment gen2
+          --platform managed
+          --allow-unauthenticated
+          --region us-central1
+          --use-http2
+          --vpc-connector nitraai-vpc
+          --set-env-vars CONSOLA_LEVEL=4
+          --set-env-vars QL=http://ql.gcp.nitra.ai/v1/graphql
+          --set-env-vars X_HASURA_ADMIN_SECRET=${{ secrets._X_HASURA_ADMIN_SECRET }}
+          --set-env-vars GITHUB_WEBHOOK_SECRET=${{ secrets._GITHUB_WEBHOOK_SECRET }}
+          --set-env-vars BX_APPLICATION_TOKEN=${{ secrets._BX_APPLICATION_TOKEN }}
+          --set-env-vars BX_WEBHOOK_TOKEN=${{ secrets._BX_WEBHOOK_TOKEN }}
+          --set-env-vars SENTRY_WEBHOOK_SECRET=${{ secrets._SENTRY_WEBHOOK_SECRET }}
+          --set-env-vars X_NITRA_CF_KEY=${{ secrets._X_NITRA_CF_KEY }}

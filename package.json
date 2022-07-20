@@ -1,0 +1,53 @@
+{
+  "name": "etalon",
+  "version": "1.0.0",
+  "repository": "https://github.com/nitra/etalon.git",
+  "author": "vitaliytv <vitaliytv@nitralabs.com>",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "site",
+    "run/*"
+  ],
+  "scripts": {
+    "hasura": "npx hasura-cli console --no-browser --project docker/hasura",
+    "h-metadata-diff": "env $(cat docker/hasura/.env.secret) npx hasura-cli metadata diff --project docker/hasura --envfile .prod.env",
+    "h-migrate-status": "env $(cat docker/hasura/.env.secret) npx hasura-cli migrate status --project docker/hasura --envfile .prod.env --database-name default",
+    "h-apply": "env $(cat docker/hasura/.env.secret) npx hasura-cli migrate apply --version 1634565878105 --project docker/hasura --envfile .prod.env --database-name default",
+    "h-apply-all": " for ID_MIGRATION in `yarn h-migrate-status | grep 'Present        Not Present' | awk '{ print $1 }'`; do env $(cat docker/hasura/.env.secret) npx hasura-cli migrate apply --version $ID_MIGRATION --project docker/hasura --database-name default  --envfile .prod.env; done",
+    "h-apply-local-all": "for ID_MIGRATION in `yarn h-migrate-status-local | grep 'Present        Not Present' | awk '{ print $1 }'`; do HASURA_GRAPHQL_ADMIN_SECRET=secret npx hasura-cli migrate apply --version $ID_MIGRATION --project docker/hasura --database-name default; done",
+    "h-metadata-apply": "env $(cat docker/hasura/.env.secret) npx hasura-cli metadata apply --project docker/hasura --envfile .prod.env",
+    "h-metadata-apply-local": "npx hasura-cli metadata apply --project docker/hasura",
+    "h-metadata-reload": "env $(cat docker/hasura/.env.secret) npx hasura-cli metadata reload --project docker/hasura --envfile .prod.env",
+    "h-migrate-status-local": "npx hasura-cli migrate status --project docker/hasura --database-name default",
+    "h-squash": "npx hasura-cli migrate squash --name add_roles --from 1624187360832 --project docker/hasura --database-name default",
+    "h-skip": "npx hasura-cli migrate apply --version 1635754545318 --skip-execution --project docker/hasura --database-name default",
+    "start": "docker compose up",
+    "fix-yaml": "yarn run prettier --write '**/*.+(yml|yaml)'",
+    "fix-json": "yarn run prettier --ignore-path .gitignore --write '**/*.json'",
+    "fix-js": "yarn dlx eslint --fix --ext .js . && yarn dlx prettier --write '**/*.js'",
+    "fix-vue": "yarn dlx eslint --fix --ext .vue .",
+    "fix-css": "yarn run stylelint --fix 'themes/**/*.scss'",
+    "fix": "yarn fix-js && yarn fix-vue && yarn dlx prettier --write . ",
+    "m1": "docker compose -f docker-compose.yml -f docker-compose-m1.yml up"
+  },
+  "devDependencies": {
+    "@cspell/dict-ru_ru": "^2.0.2",
+    "@cspell/dict-uk-ua": "^2.0.0",
+    "@nitra/cspell-dict": "^1.0.49",
+    "@nitra/eslint-config": "^1.0.20",
+    "@nitra/prettier-config": "^1.0.1",
+    "@nitra/stylelint-config": "^1.0.0"
+  },
+  "prettier": "@nitra/prettier-config",
+  "stylelint": {
+    "extends": "@nitra/stylelint-config"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@nitra"
+    ],
+    "root": true
+  },
+  "packageManager": "yarn@3.2.0"
+}

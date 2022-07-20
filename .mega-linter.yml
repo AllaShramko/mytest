@@ -1,0 +1,29 @@
+# Configuration file for Mega-Linter
+# See all available variables at https://megalinter.github.io/configuration/ and in linters documentation
+
+PRINT_ALPACA: false
+APPLY_FIXES: all # all, none, or list of linter keys
+DEFAULT_BRANCH: main # Usually master or main
+# ENABLE: # If you use ENABLE variable, all other languages/formats/tooling-formats will be disabled by default
+# ENABLE_LINTERS: # If you use ENABLE_LINTERS variable, all other linters will be disabled by default
+DISABLE:
+  - COPYPASTE # Comment to disable checks of abusive copy-pastes
+  - GIT
+  - GRAPHQL
+  - HTML
+DISABLE_LINTERS:
+  - CSS_SCSS_LINT
+  - BASH_SHELLCHECK # TODO:
+  - TYPESCRIPT_ES
+  - GROOVY_NPM_GROOVY_LINT
+  - SQL_TSQLLINT
+
+IGNORE_GENERATED_FILES: true
+SHOW_ELAPSED_TIME: true
+FILEIO_REPORTER: true
+JAVASCRIPT_DEFAULT_STYLE: prettier
+ADDITIONAL_EXCLUDED_DIRECTORIES:
+  - 'dist'
+  - 'hasura'
+
+SQL_SQLFLUFF_ARGUMENTS: --dialect postgres --ignore parsing --exclude-rules L010,L016,L036

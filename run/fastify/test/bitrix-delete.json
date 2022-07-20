@@ -1,0 +1,13 @@
+{
+  "event": "ONTASKDELETE",
+  "auth": {
+    "application_token": "secret"
+  },
+  "ts": "1605859840",
+  "data": {
+    "FIELDS_BEFORE": {
+      "ID": "16569"
+    },
+    "FIELDS_AFTER": null
+  }
+}

@@ -1,0 +1,62 @@
+name: gt-firebase-hosting
+on:
+  push:
+    paths:
+      - 'gt/**'
+    branches:
+      - main
+
+env:
+  PROJECT_ID: nitraai
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  gt-firebase-hosting:
+    name: gt-firebase-hosting
+    runs-on: self-hosted
+    steps:
+      - id: secrets
+        uses: google-github-actions/get-secretmanager-secrets@main
+        with:
+          secrets: |-
+            sentry-auth-token:${{ env.PROJECT_ID }}/sentry-auth-token
+
+      - uses: actions/checkout@v2
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Build Only Web
+        run: yarn vite build
+        working-directory: gt
+
+      - uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: '${{ steps.secrets.outputs.sentry-auth-token }}'
+          SENTRY_ORG: nitraai
+          SENTRY_PROJECT: gt
+        with:
+          sourcemaps: './gt/dist/assets'
+
+      - name: Clean source maps
+        run: rm -rf dist/assets/*.map
+        working-directory: gt
+
+      - name: Deploy
+        run: firebase deploy --only hosting --token ${{ secrets.FIREBASE_TOKEN }}
+        working-directory: gt

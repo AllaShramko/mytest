@@ -1,0 +1,10 @@
+{
+  "apps": [
+    {
+      "appId": "144c41cd",
+      "root": "gt/src-capacitor",
+      "dependencyInstallCommand": "cd .. && npm install --legacy-peer-deps",
+      "webBuildCommand": "printenv && npx @quasar/cli build -m capacitor -T android --skip-pkg"
+    }
+  ]
+}

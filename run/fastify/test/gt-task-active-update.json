@@ -1,0 +1,37 @@
+{
+  "event": {
+    "session_variables": {
+      "x-hasura-role": "gt"
+    },
+    "op": "UPDATE",
+    "data": {
+      "old": {
+        "task_id": 18987,
+        "time": "2021-07-27T08:11:23.469744+00:00",
+        "user_id": "vitaliytv@nitralabs.com"
+      },
+      "new": {
+        "task_id": null,
+        "time": "2021-07-27T08:21:04.218009+00:00",
+        "user_id": "vitaliytv@nitralabs.com"
+      }
+    },
+    "trace_context": {
+      "trace_id": 6493500421939617000,
+      "span_id": 702492740686345300
+    }
+  },
+  "created_at": "2020-11-01T07:35:10.855945Z",
+  "id": "be9bd2e9-b922-4efe-8382-2c2ae37063ac",
+  "delivery_info": {
+    "max_retries": 0,
+    "current_retry": 0
+  },
+  "trigger": {
+    "name": "gt-task-active-update"
+  },
+  "table": {
+    "schema": "gt",
+    "name": "task_active"
+  }
+}
